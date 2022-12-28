@@ -30,6 +30,12 @@ jacoco execPattern: 'target/jacoco.exec'
         }
       }
     }
+	
+	stage('sonarqube testing') {
+            steps {
+             sh "mvn clean verify sonar:sonar -Dsonar.projectKey=neumeric-application -Dsonar.host.url=http://devsecops-demo.uksouth.cloudapp.azure.com:9000 -Dsonar.login=sqp_3b40e7c22113ad8f63c1695b94ea5d31e141659b'
+            }}
+        
 			 stage('Docker Build and Push') {
        steps {
          withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
