@@ -45,7 +45,7 @@ jacoco execPattern: 'target/jacoco.exec'
  }}}
 			
 			 stage('Vulnerability Scan - Docker') {
-    steps {
+              steps {
       
       
       		sh "mvn dependency-check:check"
