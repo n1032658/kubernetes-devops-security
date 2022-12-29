@@ -22,12 +22,12 @@ deny[msg] {
 }
 
 # Only use trusted base images
-#deny[msg] {
- #   input[i].Cmd == "from"
- #   val := split(input[i].Value[0], "/")
- #   count(val) > 1
- #   msg = sprintf("Line %d: use a trusted base image", [i])
-#}
+deny[msg] {
+    input[i].Cmd == "from"
+    val := split(input[i].Value[0], "/")
+    count(val) > 1
+    msg = sprintf("Line %d: use a trusted base image", [i])
+}
 
 # Do not use 'latest' tag for base imagedeny[msg] {
 deny[msg] {
@@ -78,13 +78,13 @@ forbidden_users = [
     "0"
 ]
 
-deny[msg] {
-    command := "user"
-    users := [name | input[i].Cmd == "user"; name := input[i].Value]
-    lastuser := users[count(users)-1]
-    contains(lower(lastuser[_]), forbidden_users[_])
-    msg = sprintf("Line %d: Last USER directive (USER %s) is forbidden", [i, lastuser])
-}
+#deny[msg] {
+#    command := "user"
+#    users := [name | input[i].Cmd == "user"; name := input[i].Value]
+#    lastuser := users[count(users)-1]
+#    contains(lower(lastuser[_]), forbidden_users[_])
+#    msg = sprintf("Line %d: Last USER directive (USER %s) is forbidden", [i, lastuser])
+#}
 
 # Do not sudo
 deny[msg] {
@@ -95,7 +95,7 @@ deny[msg] {
 }
 
 # Use multi-stage builds
-default multi_stage = false
+default multi_stage = true
 multi_stage = true {
     input[i].Cmd == "copy"
     val := concat(" ", input[i].Flags)
@@ -104,4 +104,38 @@ multi_stage = true {
 deny[msg] {
     multi_stage == false
     msg = sprintf("You COPY, but do not appear to use multi-stage builds...", [])
+}
+
+
+
+stage('Vulnerability Scan - Docker') {
+      steps {
+        parallel(
+          "Dependency Scan": {
+            sh "mvn dependency-check:check"
+          },
+          "Trivy Scan": {
+            sh "bash trivy-docker-image-scan.sh"
+          },
+          "OPA Conftest": {
+            sh "/usr/local/bin/conftest test --policy opa-docker-security.rego Dockerfile"
+          }
+        )
+      }
+    }
+	
+	
+	
+	package main
+
+deny[msg] {
+  input.kind = "Service"
+  not input.spec.type = "NodePort"
+  msg = "Service type should be NodePort"
+}
+
+deny[msg] {
+  input.kind = "Deployment"
+  not input.spec.template.spec.containers[0].securityContext.runAsNonRoot = true
+  msg = "Containers must not run as root - use runAsNonRoot wihin container security context"
 }
