@@ -24,7 +24,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-      name: test-volume
         securityContext:
           runAsNonRoot: true
           runAsUser: 100
