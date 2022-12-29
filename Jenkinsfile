@@ -116,12 +116,13 @@ stage('Vulnerability Scan - Kubernetes') {
         }
       }
     }
-	
 	   stage('OWASP ZAP - DAST') {
-      steps {
-        sh 'bash zap.sh'
-      }
-    }
+       steps {
+         withKubeConfig([credentialsId: 'kubeconfig']) {
+           sh 'bash zap.sh'
+         }
+       }
+     }
         }
 
 post {
