@@ -29,18 +29,18 @@ pipeline {
      
     }
 	
-	stage('sonarqube testing') {
-            steps {
-             
-			 withSonarQubeEnv('SonarQube') {
-			 sh "mvn clean verify sonar:sonar -Dsonar.projectKey=neumeric-application -Dsonar.host.url=http://devsecops-demo.uksouth.cloudapp.azure.com:9000"
-            }
-			
-			 timeout(time: 2, unit: 'MINUTES') {
-           script {
-            waitForQualityGate abortPipeline: true
-         }
- }}}
+	//stage('sonarqube testing') {
+//            steps {
+//             
+//			 withSonarQubeEnv('SonarQube') {
+//			 sh "mvn clean verify sonar:sonar -Dsonar.projectKey=neumeric-application -Dsonar.host.url=http://devsecops-demo.uksouth.cloudapp.azure.com:9000"
+//            }
+//			
+//			 timeout(time: 2, unit: 'MINUTES') {
+//           script {
+//            waitForQualityGate abortPipeline: true
+//         }
+// }}}
 			
 	
 	stage('Vulnerability Scan - Docker') {
