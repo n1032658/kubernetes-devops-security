@@ -100,15 +100,18 @@ stage('Vulnerability Scan - Kubernetes') {
          )
        }
      }
-     stage('Integration Tests - DEV') {
+        stage('Integration Tests - DEV') {
       steps {
         script {
           try {
-            sh "bash integration-test.sh"
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "bash integration-test.sh"
             }
-          catch (e) {
-            sh "kubectl -n default rollout undo deploy ${deploymentName}"
-          throw e
+          } catch (e) {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "kubectl -n default rollout undo deploy ${deploymentName}"
+            }
+            throw e
           }
         }
       }
