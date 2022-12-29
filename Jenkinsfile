@@ -36,13 +36,18 @@ pipeline {
  }}}
 			
 	
-	
-	 stage('Vulnerability Scan - Docker') {
-            steps {
-              sh "mvn dependency-check:check"}
-
-            }
-  
+	stage('Vulnerability Scan - Docker') {
+      steps {
+        parallel(
+          "Dependency Scan": {
+            sh "mvn dependency-check:check"
+          },
+          "Trivy Scan": {
+            sh "bash Vulnerabilities_script.sh"
+          }
+        )
+      }
+    }
         
 			 stage('Docker Build and Push') {
        steps {
