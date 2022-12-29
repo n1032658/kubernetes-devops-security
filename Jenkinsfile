@@ -44,6 +44,9 @@ pipeline {
           },
           "Trivy Scan": {
             sh "bash Vulnerabilities_script.sh"
+          },
+          "OPA Conftest": {
+            sh "/usr/local/bin/conftest test --policy opa-docker-security.rego Dockerfile"
           }
         )
       }
