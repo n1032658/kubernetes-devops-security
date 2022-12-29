@@ -1,3 +1,4 @@
+@Library('slack') _
 pipeline {
   agent any
  environment {
@@ -131,7 +132,7 @@ always {
 //jacoco execPattern: 'target/jacoco.exec'
 // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
 //dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Reports', reportTitles: 'OWASP ZAP HTML Reports'])
+//publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Reports', reportTitles: 'OWASP ZAP HTML Reports'])
     // Use sendNotifications.groovy from shared library and provide current build result as parameter 
      sendNotification currentBuild.result
 }
