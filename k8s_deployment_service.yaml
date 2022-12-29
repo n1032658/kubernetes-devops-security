@@ -15,10 +15,10 @@ spec:
       labels:
         app: devsecops
     spec:
+      serviceAccountName: default
       volumes:
       - name: tmp-volume
       containers:
-      serviceAccountName: default
       - image: replace
         name: devsecops-container
         volumeMounts:
