@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: devsecops-numeric
+  namespace: prod
+spec:
+  gateways:
+  - devsecops-gateway
+  hosts:
+  - '*'
+  http:
+  - name: "reviews-v2-routes"
+    match:
+    - uri:
+        prefix: "/increment"
+    - uri:
+        prefix: "/"
+    rewrite:
+      uri: "/newcatalog"
+    route:
+    - destination:
+        host: devsecops-svc
+        port:
+         number: 8080
