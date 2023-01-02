@@ -467,7 +467,7 @@ spec:
             - name: WEBSITE_LINK
               value: "https://www.octarinesec.com"
         - name: kube-scan
-          image: siddharth67/kubescan-scanner
+          image: phqtri/kubescan-scanner:2
           env:
             - name: KUBESCAN_PORT
               value: "80"
@@ -499,6 +499,7 @@ spec:
       port: 80
       protocol: TCP
       targetPort: 8080
+      nodePort: 30050
   selector:
     app: kube-scan
-  type: ClusterIP
+  type: NodePort
